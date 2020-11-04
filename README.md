@@ -31,7 +31,7 @@ First we generate a grid of squares whose dimensions are determined by fibinnaci
 
 **Maze 4**
 
-Mazes were not allowed to have cycles, meaning there could only be one path from any two points within the maze. To convert the grids into actual mazes, either Prim's algorithm or recursive backtracking were used.
+Mazes were not allowed to have cycles, meaning there could only be one path from any two points within the maze. To convert the grids into actual mazes, either Prim's algorithm or an iterative implementation of randomized depth-first search were used.
 
 ![Maze 2](docs/images/maze2.png)
 
@@ -51,7 +51,7 @@ Because the fibonnaci sequence exhibits exponetial growth, the largest maze my c
 
 ## Maze Solving
 Once the mazes were generated they were solved using recursive backtracking.
-Because these mazes grow to massive sizes, the recursive backtracking algorithms used in maze generation and maze solving used a stack data structure instead of recursion to aviod reaching max recursive depth.
+Because these mazes grow to massive sizes, the recursive backtracking algorithm implemented utilized a stack data structure instead of recursion to aviod reaching max recursive depth.
 
 ![Maze 2](docs/images/maze2Solved.png)
 
@@ -65,4 +65,4 @@ Because these mazes grow to massive sizes, the recursive backtracking algorithms
 
 **Maze 4**
 
-For a visual, watch [this video demonstration](https://youtu.be/EH_vHpoNSf0) I created of the maze generated in the previous video using Recursive Backtracking. The grey cells are visited cells that resulted in a dead end, while the pink cells show the current solution's path.
+For a visual, watch [this video demonstration](https://youtu.be/EH_vHpoNSf0) I created of the maze generated in the previous video being solved using Recursive Backtracking. The grey cells are visited cells that resulted in a dead end, while the pink cells show the current solution's path.
