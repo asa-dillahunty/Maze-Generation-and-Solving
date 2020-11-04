@@ -9,6 +9,8 @@
 
 		<link rel="stylesheet" href="../stylesheets/template.css" type="text/css"/>
 		<link rel="stylesheet" href="../stylesheets/projectPage.css" type="text/css"/>
+		<!-- <link rel="stylesheet" href="../../asa-dillahunty.github.io/stylesheets/template.css" type="text/css"/>
+		<link rel="stylesheet" href="../../asa-dillahunty.github.io/stylesheets/projectPage.css" type="text/css"/> -->
 	</head>
 
 	<body>
@@ -22,7 +24,8 @@
 					<li><a href="../contact.html">Contact Me</a></li>
 			</ul>
 		</nav>
-		<h1>Maze Generation and Solving</h1>
+		<h1>Maze Generation and Solving <a href="https://github.com/asa-dillahunty/Maze-Generation-and-Solving" target="_blank">
+			<img src="https://simpleicons.org/icons/github.svg" alt="GitHub"/></a> </h1>
 		<p class="warning">
 			WARNING: Videos contain flashing
 		</p>
@@ -52,7 +55,7 @@
 			</li>
 		</ul>
 		<p>
-			Mazes were not allowed to have cycles, meaning there could only be one path from any two points within the maze. To convert the grids into actual mazes, either <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_Prim's_algorithm" target="_blank">Prim's algorithm</a> or <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm#Recursive_backtracker" target="_blank">recursive backtracking</a> were used.
+			Mazes were not allowed to have cycles, meaning there could only be one path between any two points within the maze. To convert the grids into actual mazes, either <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_Prim's_algorithm" target="_blank">Prim's algorithm</a> or an iterative implementation of <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_depth-first_search" target="_blank">randomized depth-first search</a> were used.
 		</p>
 			<ul class="exampleImages">
 			<li>
@@ -84,7 +87,7 @@
 		<h2>Maze Solving</h2>
 		<p>
 			Once the mazes were generated they were solved using recursive backtracking.
-			Because these mazes grow to massive sizes, the recursive backtracking algorithms used in maze generation and maze solving used a stack data structure instead of recursion to aviod reaching max recursive depth.
+			Because these mazes grow to massive sizes, the recursive backtracking algorithm implemented utilized a stack data structure instead of recursion to aviod reaching the max recursive depth.
 		</p>
 			<ul class="exampleImages">
 				<li>
@@ -104,7 +107,7 @@
 				</li>
 			</ul>
 		<p>
-			Below is a video demonstration of the maze generated in the previous video using
+			Below is a video demonstration of the maze generated in the previous video being solved using
 			Recursive Backtracking. The grey cells are visited cells that resulted in a dead end, while the pink cells show the current solution's path.
 		</p>
 		<iframe src="https://www.youtube.com/embed/EH_vHpoNSf0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
