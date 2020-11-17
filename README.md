@@ -1,6 +1,6 @@
 # Maze Generation and Solving
 
-This was a highschool programming project in which I demostrated the use of certain algorithms in solving mazes.
+This was a highschool programming project in which I demonstrated the use of certain algorithms in solving mazes.
 
 ## How to execute
 This must be run on a computer that has JAVA installed. Run either
@@ -17,7 +17,7 @@ java MazeB
 The first method generates mazes using Prims algorithm and then solves them. This takes considerably more time (and RAM), but the mazes appear more random to me. The second method generates mazes using recursive backtracking.
 
 ## Maze Generation
-First we generate a grid of squares whose dimensions are determined by fibinnaci numbers. Maze 0 was the 0th fibinnaci number (1) by the 1st fibinnaci number (1), maze 1 being the 1st fibinnaci number by the 2nd (1 by 2), maze 2 being the 2nd by the 3rd (2 by 3) and so on.
+First we generate a grid of squares whose dimensions are determined by fibonacci numbers. Maze 0 was the 0th fibonacci number (1) by the 1st fibonacci number (1), maze 1 being the 1st fibonacci number by the 2nd (1 by 2), maze 2 being the 2nd by the 3rd (2 by 3) and so on.
 
 ![Maze 2](docs/images/maze32.png)
 
@@ -47,11 +47,11 @@ Mazes were not allowed to have cycles, meaning there could only be one path from
 
 If curious watch [this video demonstration](https://youtu.be/RiYUn40gsEY) I made of Prim's Algorithm for generating mazes implemented in JAVA. The blue cells are cells currently in the list of possible cells to look at and the pink cell is the one currently being looked at.
 
-Because the fibonnaci sequence exhibits exponetial growth, the largest maze my computer could generate was maze 21, which is 17711 cells by 28657 cells.
+Because the fibonacci sequence exhibits exponential growth, the largest maze my computer could generate was maze 21, which is 17711 cells by 28657 cells.
 
 ## Maze Solving
 Once the mazes were generated they were solved using recursive backtracking.
-Because these mazes grow to massive sizes, the recursive backtracking algorithm implemented utilized a stack data structure instead of recursion to aviod reaching max recursive depth.
+Because these mazes grow to massive sizes, the recursive backtracking algorithm implemented utilized a stack data structure instead of recursion to avoid reaching max recursive depth.
 
 ![Maze 2](docs/images/maze2Solved.png)
 
