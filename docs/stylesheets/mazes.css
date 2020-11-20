@@ -7,42 +7,8 @@
 	display: none;
 }
 
-div.mazebox {
-	margin: 0;
-	padding: 0;
-	
-}
-
-div.boxrow {
-	line-height: 0 !important;
-	margin: 0;
-	padding: 0;
-	white-space: nowrap;
-}
-
-.box {
-	line-height: 0 !important;
-	display: inline-block;
-	height: var(--cell-size);
-	width: var(--cell-size);
-	margin: 0;
-	padding: 0;
-}
-
-.cell {
-	background-color: white;
-}
-
-.wall {
-	background-color: black;
-}
-
-.solution {
-	background-color: magenta;
-}
-
-.deadend {
-	background-color: grey;
+canvas {
+	border: none;
 }
 
 input[type=number] {
@@ -59,7 +25,8 @@ input[type=number] {
 	flex-wrap: wrap;
 }
 
-#mazeInputs button {
+#mazeSection button {
+	transition: all .8s;
 	margin-left: 10px;
 	background-color: #008CBA;
 	color: white;
@@ -71,6 +38,65 @@ input[type=number] {
 	text-shadow: 1px 1px 1px black;
 	box-shadow: 1px 1px 1px black;
 	font-size: 1.3rem;
+}
+
+#mazeSection button:hover {
+	background-color: #006C9A;
+}
+
+#canvasContainer {
+	display: block;
+	position: relative;
+	margin: auto;
+	overflow: hidden;
+}
+
+#canvasContainer canvas {
+	position: absolute;
+	top:50%;
+	right:50%;
+	transform: translate(50%,-50%);
+	z-index: 3;
+}
+
+#canvasContainer canvas:hover {
+	z-index: 1;
+}
+
+#canvasContainer .glassButtons {
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	background-color: rgba(0,0,0,.4);
+	/* background-color: rgba(0,0,0,.4); */
+}
+
+#canvasContainer .glassButtons button {
+	box-shadow: none;
+}
+
+#canvasContainer .glassButtons:hover {
+	z-index: 4;
+}
+
+#mazeSection div.glassButtons button {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin: 0;
+	background-color: rgba(0,0,0,.4);
+	border-radius: 0;
+	border: none;
+	font-size: 1rem;
+
+	/* color: black; */
+}
+
+#mazeSection div.glassButtons button:hover {
+	background-color: #000000;
+}
+
+#mazeSection div.glassButtons.outside {
+	display: none;
 }
 
 .break {

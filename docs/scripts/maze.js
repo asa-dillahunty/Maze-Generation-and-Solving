@@ -4,39 +4,38 @@ function setup() {
 }
 	
 var maze = {
+	CELL: 5, // I'm worried undefined and 0 may be equal in some scenarios
+	WALL: 1,
+	VISITED: 2,
+	DEADEND: 3,
+	SOLUTION: 4,
 	height: 0,
 	width: 0,
-	body: "",
+	renderScale: 6,
+	matrix: [],
 	build: function(type) {
 		var num = parseInt(document.getElementById('mazeSize').value);
 		this.mazeInit(num,1);
 		if (type == 'RB') this.RBMaze();
+		this.render();
 	},
 	mazeInit: function(size,speed) {
 		this.width = fib(size) * 2 + 1;
 		this.height = fib(size + 1) * 2 + 1;
-		this.body = document.getElementById("boxmaze");
-		this.body.innerHTML = "";
 
-		var mazeText = "";
+		this.matrix = [];
+
 		for (var i = 0; i < maze.width; i++) {
-			// maze.style.backgroundColor = red;
-			mazeText += '<div class="boxrow">';
+			var temp = [];
 			for (var j = 0; j < maze.height; j++) {
-				if (i%2 == 1 && j%2 == 1) {
-					mazeText +='<div class="box cell"></div>';
-				}
-				else {
-					// console.log(mazeText);
-					mazeText += '<div class="box wall"></div>';
-				}
+				if (i%2 == 1 && j%2 == 1) temp.push(this.CELL);
+				else temp.push(this.WALL);
 			}
-			mazeText += '</div>';
+			this.matrix.push(temp);
 		}
-		this.body.innerHTML = mazeText;
 
-		this.body.children[1].children[0].classList = "box cell";
-		this.body.children[maze.width-2].children[maze.height-1].classList = "box cell";
+		this.matrix[1][0] = this.CELL;
+		this.matrix[this.width-2][this.height-1] = this.CELL;
 	},
 	RBMaze() {
 		stack = [];
@@ -49,7 +48,6 @@ var maze = {
 		stack.push(m*this.height+n);
 
 
-		// var count=0;
 		var curr, next, x, y, nx, ny;
 		var pos; // possible positions to travel to
 		while (stack.length) {
@@ -57,12 +55,10 @@ var maze = {
 
 			x = Math.floor(curr/this.height);
 			y = curr%this.height;
-			// This can mean it can have visited in its class more than once. 
-			// This should not be an issue
-			if (!this.body.children[x].children[y].classList.contains('visited'))
-				this.body.children[x].children[y].classList += ' visited';
 
-			pos = this.getPos(curr, 2, [], ["visited"]);		
+			this.matrix[x][y] = this.VISITED;
+
+			pos = this.getPos(curr, 2, [this.CELL]);
 
 			if (pos.length  == 0) continue;
 			if (pos.length > 1) stack.push(curr); 
@@ -73,54 +69,43 @@ var maze = {
 			nx = Math.floor(next/this.height);
 			ny = next%this.height;
 
-			if (!this.body.children[nx].children[ny].classList.contains('visited'))
-				this.body.children[nx].children[ny].classList += ' visited';
+			this.matrix[nx][ny] = this.VISITED;
 
-			this.body.children[(x+nx)/2].children[(y+ny)/2].classList = 'box cell';
-			// console.log(stack);
-			// if (count++ > 110) {
-			// 	console.log("manual");
-			// 	break;
-			// }
+			this.matrix[(x+nx)/2][(y+ny)/2] = this.CELL; // this is the wall between the two visited points
 		}
 	},
-	getPos: function(cord, scale, contained, notContained) {
+	getPos: function(cord, scale, allowed) {
 		var options = [];
 
 		var x=Math.floor(cord/this.height);
-		// console.log(x);
 		var y=cord%this.height;
 		var deltas = [{x:-1,y:0},{x:1,y:0},{x:0,y:-1},{x:0,y:1}];
 		
-		var classes;
-		var passing;
+		var classification;
 
 		for (var i=0;i<deltas.length;i++) {
 			try {
 				dx = deltas[i].x*scale;
 				dy = deltas[i].y*scale;
 				
-				classes = this.body.children[x+dx].children[y+dy].classList;
-				passing = true;
+				// this is the scenario in which I was worried 0 == undefined, so I changed it
+				classification = this.matrix[x+dx][y+dy];
+				if (!classification) continue;
 
 				// make sure it contains all in contained
-				for (var j=0;j<contained.length && passing;j++) {
-					if (!classes.contains(contained[j])) passing = false;
+				for (var j=0;j<allowed.length;j++) {
+					if (classification === allowed[j]) {
+						options.push(cord + dx*this.height + dy);
+						break;
+					}
 				}
-
-				// make sure it doesn't contain any in notContained 
-				for (var j=0;j<notContained.length && passing;j++) {
-					if (classes.contains(notContained[j])) passing = false;
-				}
-
-				if (passing) options.push(cord + dx*this.height + dy);
 			} catch (err){continue;}
 		}
 		return options;
 	},
 	solve: function() {
 		var end = (this.height*(this.width-2)+this.height-1);
-		if (this.body.children[1].children[0].classList.contains("solution")) return;
+		if (this.matrix[1][0] == this.SOLUTION) return;
 
 		var stack = [];
 		stack.push(this.height);
@@ -131,31 +116,96 @@ var maze = {
 			x = Math.floor(curr/this.height);
 			y = Math.floor(curr%this.height);
 
-			if (!this.body.children[x].children[y].classList.contains("solution"))
-				this.body.children[x].children[y].classList += " solution";
+			this.matrix[x][y] = this.SOLUTION;
 
-			if (curr == end) {
-				return;
-			}
+			if (curr == end) break;
 
-			pos = this.getPos(curr,1,["cell"],["solution","deadend"]);
+			pos = this.getPos(curr,1,[this.CELL,this.VISITED]);
 			
 			if (pos.length == 0) {
 				// dead end
-				this.body.children[x].children[y].classList += " deadend";
+				this.matrix[x][y] = this.DEADEND;
 				continue;
 			}
 			stack.push(curr); // reinsert for backtracking purposes
 
+			// perhaps insert some sort of heuristic instead of choosing randomly?
 			next = getRandom(pos);
 			stack.push(next);
 		}
+		this.render();
+	},
+	render: function() {
+		// set canvas size to fill
+		// width = height, 
+		// height = width
+
+		var c = document.getElementById("mazeCanvas");
+		c.width = this.renderScale * this.height;
+		c.height = this.renderScale * this.width;
+		
+		var cc = document.getElementById("canvasContainer");
+		cc.style.height = c.height+"px";
+		cc.style.width = c.width+"px";
+		
+	
+		var ctx = c.getContext("2d");
+		for (var i=0;i<this.width;i++) {
+			for (var j=0;j<this.height;j++) {
+				ctx.fillStyle = "#FFFFFF"; // default to white
+				if (this.matrix[i][j] == this.DEADEND) {
+					ctx.fillStyle = "#555555"; // grey?
+				}
+				else if (this.matrix[i][j] == this.SOLUTION) {
+					ctx.fillStyle = "#FF108F";
+				}
+				else if(this.matrix[i][j] == this.WALL) {
+					ctx.fillStyle = "#000000";
+				}
+				// flip i and j because I set up my matrix wrong and don't want to fix it
+				ctx.fillRect(j*this.renderScale,i*this.renderScale,this.renderScale,this.renderScale);
+			}
+		}
+
+		// Check if magnifying glasses fit in the canvas,
+		// otherwise swap with outside glasses
+		var arr;
+		if (c.width < 110) {
+			// set outside to active
+			arr = document.getElementsByClassName("glassButtons");
+			for (var i=0;i<arr.length;i++) {
+				if (arr[i].classList.contains("outside")) arr[i].style.display = "inherit";
+				else arr[i].style.display = "none";
+			}
+			
+		}
+		else {
+			// set inside to active
+			arr = document.getElementsByClassName("glassButtons");
+			for (var i=0;i<arr.length;i++) {
+				if (arr[i].classList.contains("inside")) arr[i].style.display = "inherit";
+				else arr[i].style.display = "none";
+			}
+		}
+	},
+	reduceRender: function() {
+		if (this.renderScale == 1) return;
+
+		this.renderScale -= 1;
+		this.render();
+	},
+	increaseRender: function() {
+		if (this.renderScale == 10) return;
+
+		this.renderScale += 1;
+		this.render();
 	}
 };
 
 function disableButtons() {
 	var buttons = document.getElementsByTagName("button");
 	for (var i=0;i<buttons.length;i++) {
+		if (buttons[i].classList.contains("glass")) continue;
 		buttons[i].style.cursor = "wait";
 		buttons[i].style.backgroundColor = "grey";
 		buttons[i].disabled = true;
@@ -165,6 +215,7 @@ function disableButtons() {
 function enableButtons() {
 	var buttons = document.getElementsByTagName("button");
 	for (var i=0;i<buttons.length;i++) {
+		if (buttons[i].classList.contains("glass")) continue;
 		buttons[i].disabled = false;
 		buttons[i].style.cursor = "pointer";
 		buttons[i].style.backgroundColor = "#008CBA";

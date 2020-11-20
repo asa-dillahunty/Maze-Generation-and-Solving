@@ -120,15 +120,28 @@
 		<section id="mazeSection">
 			<h2>Live Demo</h2>
 			<p>
-				I took the time to implement my JAVA code in JavaScript, so you can actually generate mazes here!
-				Because the script runs in the browser, I don't recommend making mazes larger than 7.
+				I implemented my JAVA code in JavaScript (with some performance improvements), so you can actually generate mazes here!
+				It's a pretty neat tool that could definitely use some work, but it's what I know how to do at the moment.
+				The magnifying glasses with the + or - increase/decrease the size of the display, while the bar beneath the maze determines what number maze you'd like to generate.
+				Selecting "solve" solves the current maze, and selecting "generate" builds a maze of the specified number.
+				I set the max to 13, but I don't recommend it.
 			</p>
 
-			<div id="boxmaze"></div>
+			<div class="glassButtons outside">
+				<button class="glass" onclick="maze.reduceRender();">&#x1F50D;-</button>
+				<button class="glass" onclick="maze.increaseRender();">&#x1F50D;+</button>
+			</div>
+			<div id="canvasContainer">
+				<canvas id="mazeCanvas" width="200" height="100"></canvas>
+				<div class="glassButtons inside">
+					<button class="glass" onclick="maze.reduceRender();">&#x1F50D;-</button>
+					<button class="glass" onclick="maze.increaseRender();">&#x1F50D;+</button>
+				</div>
+			</div>
 
 			<div id="mazeInputs">
-				<input type="range" min="0" max="10" value="3" class="slider" id="mazeSize" oninput="updateVal('mazeSize', 'amount')">
-				<input id="amount" type="number" value="3" min="0" max="10" oninput="updateVal('amount', 'mazeSize')" />
+				<input type="range" min="0" max="13" value="6" class="slider" id="mazeSize" oninput="updateVal('mazeSize', 'amount')">
+				<input id="amount" type="number" value="6" min="0" max="13" oninput="updateVal('amount', 'mazeSize')" />
 				<div class="break"></div>
 				<button onclick="disableButtons();maze.build('RB');enableButtons();">Generate</button>
 				<button onclick="disableButtons();maze.solve();enableButtons();">Solve</button>
