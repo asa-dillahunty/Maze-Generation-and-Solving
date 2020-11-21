@@ -105,7 +105,13 @@ var maze = {
 	},
 	solve: function() {
 		var end = (this.height*(this.width-2)+this.height-1);
-		if (this.matrix[1][0] == this.SOLUTION) return;
+		
+		if (this.matrix[1][0] == this.SOLUTION) {
+			for (var i=0;i<this.matrix.length;i++)
+				for (var j=0;j<this.matrix[i].length;j++)
+					if (this.matrix[i][j] == this.DEADEND || this.matrix[i][j] == this.SOLUTION) this.matrix[i][j] = this.CELL;
+		}
+
 
 		var stack = [];
 		stack.push(this.height);
