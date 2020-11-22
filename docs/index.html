@@ -128,14 +128,14 @@
 			</p>
 
 			<div class="glassButtons outside">
-				<button class="glass" onclick="maze.reduceRender();">&#x1F50D;-</button>
-				<button class="glass" onclick="maze.increaseRender();">&#x1F50D;+</button>
+				<button class="glass" onclick="callWithTimeout(maze,'reduceRender');">&#x1F50D;-</button>
+				<button class="glass" onclick="callWithTimeout(maze,'increaseRender');">&#x1F50D;+</button>
 			</div>
 			<div id="canvasContainer">
 				<canvas id="mazeCanvas" width="200" height="100"></canvas>
 				<div class="glassButtons inside">
-					<button class="glass" onclick="maze.reduceRender();">&#x1F50D;-</button>
-					<button class="glass" onclick="maze.increaseRender();">&#x1F50D;+</button>
+					<button class="glass" onclick="callWithTimeout(maze,'reduceRender');">&#x1F50D;-</button>
+					<button class="glass" onclick="callWithTimeout(maze,'increaseRender');">&#x1F50D;+</button>
 				</div>
 			</div>
 
@@ -143,8 +143,9 @@
 				<input type="range" min="0" max="13" value="6" class="slider" id="mazeSize" oninput="updateVal('mazeSize', 'amount')">
 				<input id="amount" type="number" value="6" min="0" max="13" oninput="updateVal('amount', 'mazeSize')" />
 				<div class="break"></div>
-				<button onclick="disableButtons();maze.build('RB');enableButtons();">Generate</button>
-				<button onclick="disableButtons();maze.solve();enableButtons();">Solve</button>
+				<button onclick="callWithTimeout(maze,'build');">Generate</button>
+				<button onclick="callWithTimeout(maze,'solve');">Solve</button>
+				<button onclick="callWithTimeout(null,downloadMaze);">Download</button>
 			</div>
 		</section>
 

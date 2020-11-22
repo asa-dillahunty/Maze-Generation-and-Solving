@@ -2,8 +2,31 @@ function setup() {
 	document.getElementById("mazeSection").style.display="inherit";
 	maze.build('RB');
 }
+
+function downloadMaze() {
+	var link = document.createElement('a');
+
+	if (maze.isSolved()) link.download = `maze${maze.number}solved.png`;
+	else link.download = `maze${maze.number}.png`;
+	link.href = document.getElementById('mazeCanvas').toDataURL("image/png");
+	link.click();
+	// document.write('<img src="'+img+'"/>');
+}
+
+function callWithTimeout(obj, func,time=100) {
+	disableButtons();
+	setTimeout(function() {
+		if (obj == null) func();
+		else if (func == "increaseRender") obj.increaseRender();
+		else if (func == "reduceRender") obj.reduceRender();
+		else if (func == "build") obj.build('RB');
+		else if (func == "solve") obj.solve();
+		enableButtons();
+	}, time);
+}
 	
 var maze = {
+	number: 0,
 	CELL: 5, // I'm worried undefined and 0 may be equal in some scenarios
 	WALL: 1,
 	VISITED: 2,
@@ -14,9 +37,10 @@ var maze = {
 	renderScale: 6,
 	matrix: [],
 	build: function(type) {
-		var num = parseInt(document.getElementById('mazeSize').value);
-		this.mazeInit(num,1);
+		this.number = parseInt(document.getElementById('mazeSize').value);
+		this.mazeInit(this.number,1);
 		if (type == 'RB') this.RBMaze();
+		else if (type == 'prim') this.primMaze();
 		this.render();
 	},
 	mazeInit: function(size,speed) {
@@ -74,6 +98,46 @@ var maze = {
 			this.matrix[(x+nx)/2][(y+ny)/2] = this.CELL; // this is the wall between the two visited points
 		}
 	},
+	primMaze() {
+		list = [];
+
+		var n=Math.floor(Math.random()*(this.height-1));
+		var m=Math.floor(Math.random()*(this.width-1));
+		if (n%2==0) n++;
+		if (m%2==0) m++;
+
+		this.matrix[m][n] = this.VISITED;
+		list.push(m*this.height+n);
+
+		var curr;
+		var next;
+		var index;
+		while (list.length > 0) {
+			index = Math.floor(Math.random()*list.length);
+			curr = list[index];
+			
+			x = Math.floor(curr/this.height);
+			y = curr%this.height;
+
+
+			pos = this.getPos(curr, 2, [this.CELL]);
+
+			if (pos.length <= 1) {
+				// remove index
+				list.splice(index,1);
+				if (pos.length < 1) continue;
+			}
+
+			next = getRandom(pos);
+			list.push(next);
+
+			nx = Math.floor(next/this.height);
+			ny = next%this.height;
+			this.matrix[nx][ny] = this.VISITED;
+
+			this.matrix[(x+nx)/2][(y+ny)/2] = this.CELL; // this is the wall between the two visited points
+		}
+	},
 	getPos: function(cord, scale, allowed) {
 		var options = [];
 
@@ -106,7 +170,7 @@ var maze = {
 	solve: function() {
 		var end = (this.height*(this.width-2)+this.height-1);
 		
-		if (this.matrix[1][0] == this.SOLUTION) {
+		if (this.isSolved()) {
 			for (var i=0;i<this.matrix.length;i++)
 				for (var j=0;j<this.matrix[i].length;j++)
 					if (this.matrix[i][j] == this.DEADEND || this.matrix[i][j] == this.SOLUTION) this.matrix[i][j] = this.CELL;
@@ -140,6 +204,10 @@ var maze = {
 			stack.push(next);
 		}
 		this.render();
+	},
+	isSolved: function() {
+		// we can ensure there will always be one solution
+		return this.matrix[1][0] == this.SOLUTION;
 	},
 	render: function() {
 		// set canvas size to fill
@@ -211,9 +279,7 @@ var maze = {
 function disableButtons() {
 	var buttons = document.getElementsByTagName("button");
 	for (var i=0;i<buttons.length;i++) {
-		if (buttons[i].classList.contains("glass")) continue;
 		buttons[i].style.cursor = "wait";
-		buttons[i].style.backgroundColor = "grey";
 		buttons[i].disabled = true;
 	}
 }
@@ -221,10 +287,8 @@ function disableButtons() {
 function enableButtons() {
 	var buttons = document.getElementsByTagName("button");
 	for (var i=0;i<buttons.length;i++) {
-		if (buttons[i].classList.contains("glass")) continue;
 		buttons[i].disabled = false;
 		buttons[i].style.cursor = "pointer";
-		buttons[i].style.backgroundColor = "#008CBA";
 	}
 }
 
