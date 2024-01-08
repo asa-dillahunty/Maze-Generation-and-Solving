@@ -1,6 +1,11 @@
 # Maze Generation and Solving
 
-This was a highschool programming project in which I demonstrated the use of certain algorithms in solving mazes.
+This was a highschool programming project in which I demonstrated the use of certain algorithms in generating and solving mazes.
+
+For a live demo, and a slightly cleaner presentation of the concepts explained in the following readme, visit the project's page on my website at the link below<br/>
+<a href='https://asa-dillahunty.github.io/Maze-Generation-and-Solving/'>
+    <img margin=20px height=40px alt='React' src='https://img.shields.io/badge/website-000000?style=for-the-badge&logo=About.me&logoColor=white'>
+</a>
 
 ## How to execute
 This must be run on a computer that has JAVA installed. Run either
