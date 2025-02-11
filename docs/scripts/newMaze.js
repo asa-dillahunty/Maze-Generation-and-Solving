@@ -17,22 +17,25 @@ function restart() {
   newMaze.mazeInit();
   newMaze.render();
 
+  Math.random();
   stepThrough(
-    () => newMaze.RBMazeStep(),
+    Math.random() < 0.7
+      ? () => newMaze.RBMazeStep()
+      : () => newMaze.primMazeStep(),
     () => stepThrough(() => newMaze.solveRBStep(), restart)
   );
 }
 
 function stepThrough(stepFunc, doneFunc) {
   const result = stepFunc();
-  newMaze.render();
+  // newMaze.render();
 
   if (result === "done") setTimeout(doneFunc, newMaze.speed * 10);
   else setTimeout(() => stepThrough(stepFunc, doneFunc), newMaze.speed);
 }
 
 const newMaze = {
-  speed: 10,
+  speed: 20,
   CELL: 5, // I'm worried undefined and 0 may be equal in some scenarios
   WALL: 1,
   VISITED: 2,
@@ -45,18 +48,13 @@ const newMaze = {
   buildList: [],
   solveList: [],
 
-  build: function (type) {
-    if (type === "RB") this.RBMazeStep();
-    else if (type === "prim") this.primMaze();
-    this.render();
-  },
   mazeInit: function () {
     // grab my own height/width
     const canvHeight = mazeCanvas.height;
     const canvWidth = mazeCanvas.width;
 
     // we aim for a specific area, lets say 100
-    const goalArea = 1000;
+    const goalArea = 700;
     const realArea = canvHeight * canvWidth;
 
     const res = Math.sqrt(realArea / goalArea);
@@ -116,6 +114,7 @@ const newMaze = {
       y = curr % this.height;
 
       this.matrix[x][y] = this.VISITED;
+      this.renderSquare(x, y);
 
       pos = this.getPos(curr, 2, [this.CELL]);
 
@@ -129,8 +128,12 @@ const newMaze = {
       ny = next % this.height;
 
       this.matrix[nx][ny] = this.VISITED;
+      this.renderSquare(nx, ny);
 
-      this.matrix[(x + nx) / 2][(y + ny) / 2] = this.CELL; // this is the wall between the two visited points
+      const wallX = (x + nx) / 2;
+      const wallY = (y + ny) / 2;
+      this.matrix[wallX][wallY] = this.CELL; // this is the wall between the two visited points
+      this.renderSquare(wallX, wallY);
     }
 
     if (this.buildList.length === 0) return "done";
@@ -144,6 +147,7 @@ const newMaze = {
       if (m % 2 === 0) m++;
 
       this.matrix[m][n] = this.VISITED;
+      this.renderSquare(m, n);
       this.buildList.push(m * this.height + n);
     }
 
@@ -170,8 +174,12 @@ const newMaze = {
       nx = Math.floor(next / this.height);
       ny = next % this.height;
       this.matrix[nx][ny] = this.VISITED;
+      this.renderSquare(nx, ny);
 
-      this.matrix[(x + nx) / 2][(y + ny) / 2] = this.CELL; // this is the wall between the two visited points
+      const wallX = (x + nx) / 2;
+      const wallY = (y + ny) / 2;
+      this.matrix[wallX][wallY] = this.CELL; // this is the wall between the two visited points
+      this.renderSquare(wallX, wallY);
     }
 
     if (this.buildList.length < 1) return "done";
@@ -227,6 +235,7 @@ const newMaze = {
       y = Math.floor(curr % this.height);
 
       this.matrix[x][y] = this.SOLUTION;
+      this.renderSquare(x, y);
 
       if (curr === end) {
         // is solved
@@ -238,6 +247,7 @@ const newMaze = {
       if (pos.length === 0) {
         // dead end
         this.matrix[x][y] = this.DEADEND;
+        this.renderSquare(x, y);
         return "not done";
       }
       this.solveList.push(curr); // reinsert for backtracking purposes
@@ -280,6 +290,26 @@ const newMaze = {
         );
       }
     }
+  },
+  renderSquare: function (i, j) {
+    var ctx = mazeCanvas.getContext("2d");
+    ctx.fillStyle = "#353063";
+    if (this.matrix[i][j] === this.DEADEND) {
+      ctx.fillStyle = "#353063";
+    } else if (this.matrix[i][j] === this.SOLUTION) {
+      ctx.fillStyle = "#6f67ff";
+    } else if (this.matrix[i][j] === this.WALL) {
+      ctx.fillStyle = "#16142a";
+    }
+    // else if (this.matrix[i][j] === this.VISITED) {
+    //   ctx.fillStyle = "#f3bc4e";
+    // }
+    ctx.fillRect(
+      i * this.renderScale,
+      j * this.renderScale,
+      this.renderScale,
+      this.renderScale
+    );
   },
 };
 
